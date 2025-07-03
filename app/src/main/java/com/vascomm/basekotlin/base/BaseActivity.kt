@@ -1,71 +1,51 @@
+// BaseActivity.kt
 package com.vascomm.basekotlin.base
 
 import android.os.Bundle
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.LogUtils
-import com.vascomm.basekotlin.util.Loading
 import com.vascomm.basekotlin.R
+import com.vascomm.basekotlin.util.Loading
 
-/**
- * Base class for activity instances
- */
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
-    //region vars
+    protected lateinit var binding: VB
     private lateinit var mLoading: Loading
-    //endregion
 
-    /**
-     * Set layout id
-     */
-    @LayoutRes
-    abstract fun getLayoutId(): Int
+    // Fungsi untuk inflate ViewBinding, diimplementasi oleh subclass
+    abstract fun inflateBinding(): VB
 
-    /**
-     * Prepare UI Components
-     */
+    // Fungsi untuk setup view
     abstract fun prepareView(savedInstanceState: Bundle?)
 
-    /**
-     * Override onCreate method
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogUtils.d("$this onCreate: ")
-        //Set layout
-        setContentView(getLayoutId())
-        //Set custom loading dialog
+        LogUtils.d("$this onCreate")
+
+        binding = inflateBinding()
+        setContentView(binding.root)
+
         mLoading = Loading(this, R.style.StyleLoading)
         //Set view
         prepareView(savedInstanceState)
     }
 
-    //region Custom Loading Dialog's methods
-    /**
-     * Show loading
-     */
     fun showLoading() {
         try {
-            if (!mLoading.isShowing && !isFinishing)
-                mLoading.show()
+            if (!mLoading.isShowing && !isFinishing) mLoading.show()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    /**
-     * Hide loading
-     */
     fun hideLoading() {
         try {
-            if (mLoading.isShowing)
-                mLoading.dismiss()
+            if (mLoading.isShowing) mLoading.dismiss()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-    //endregion
 
     override fun onStart() {
         super.onStart()
@@ -79,7 +59,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        LogUtils.d("$theme onPause")
+        LogUtils.d("$this onPause")
     }
 
     override fun onStop() {
@@ -91,5 +71,4 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onDestroy()
         LogUtils.d("$this onDestroy")
     }
-    //endregion
 }

@@ -6,7 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
+    android:background="@color/design_default_color_background"
     android:padding="16dp">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchUser"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:queryHint="Search user..."
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cardUserProfile"/>
 
     <!-- CardView untuk Profile User -->
     <androidx.cardview.widget.CardView
@@ -17,7 +27,7 @@
         app:cardElevation="6dp"
         android:padding="16dp"
         app:cardBackgroundColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchUser"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 

@@ -1,0 +1,20 @@
+package com.vascomm.basekotlin.core.network
+
+enum class ResponseCode(val code: Int, val message: String) {
+    SUCCESS(200, "Success"),
+    CREATED(201, "Created"),
+    ACCEPTED(202, "Accepted"),
+    NO_CONTENT(204, "No Content"),
+    BAD_REQUEST(400, "Bad Request"),
+    UNAUTHORIZED(401, "Unauthorized"),
+    FORBIDDEN(403, "Forbidden"),
+    NOT_FOUND(404, "Not Found"),
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    DATA_UPDATED(200, "Data Updated");
+
+    companion object {
+        fun getMessage(code: Int): String {
+            return ResponseCode.entries.firstOrNull { it.code == code }?.message ?: "Unknown Response"
+        }
+    }
+}

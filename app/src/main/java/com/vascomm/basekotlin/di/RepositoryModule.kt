@@ -1,8 +1,12 @@
 package com.vascomm.basekotlin.di
 
+import com.vascomm.basekotlin.data.remote.source.AuthDataSourceImpl
 import com.vascomm.basekotlin.data.remote.source.UserDataSourceImpl
+import com.vascomm.basekotlin.data.repository.AuthDataSource
+import com.vascomm.basekotlin.data.repository.AuthRepositoryImpl
 import com.vascomm.basekotlin.data.repository.UserDataSource
 import com.vascomm.basekotlin.data.repository.UserRepositoryImpl
+import com.vascomm.basekotlin.domain.repository.AuthRepository
 import com.vascomm.basekotlin.domain.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -25,4 +29,14 @@ object RepositoryModule {
     @Singleton
     fun provideUserRepository(userRepository: UserRepositoryImpl): UserRepository =
         userRepository
+
+    @Provides
+    @Singleton
+    fun provideAuthDataSourceImpl(authDataSource: AuthDataSourceImpl): AuthDataSource =
+        authDataSource
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(authRepository: AuthRepositoryImpl): AuthRepository =
+        authRepository
 }

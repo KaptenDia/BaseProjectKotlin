@@ -1,10 +1,12 @@
 package com.vascomm.basekotlin.ui.test
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.LogUtils
-import com.vascomm.basekotlin.R
 import com.vascomm.basekotlin.base.BaseFragment
+import com.vascomm.basekotlin.databinding.FragmentTestBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -15,11 +17,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class TestFragment : BaseFragment(R.layout.fragment_test) {
+class TestFragment : BaseFragment<FragmentTestBinding>() {
 
-    //region vars
     private val viewModel: TestFragmentViewModel by viewModels()
-    //endregion
+
+    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTestBinding {
+        return FragmentTestBinding.inflate(inflater, container, false)
+    }
 
     override fun prepareView(savedInstanceState: Bundle?) {
         LogUtils.d("$this prepareView")

@@ -9,13 +9,13 @@ import com.vascomm.basekotlin.R
  * Show alert dialog
  */
 fun Context.showMessage(
-    stringId: Int,
+    message: String?,
     onPositive: ((MaterialDialog) -> Unit)? = null
 ) {
     MaterialDialog(this).show {
         cancelable(false)
         cancelOnTouchOutside(false)
-        message(text = StringUtils.getString(stringId))
+        message(text = message)
         positiveButton(R.string.ok) {
             onPositive?.invoke(it)
         }

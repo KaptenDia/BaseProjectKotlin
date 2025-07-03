@@ -32,13 +32,13 @@ class HomeFragmentViewModel @Inject constructor(
 
     init {
         LogUtils.d("$this initialize")
-        getUser("heheboayy")
+//        getUser("heheboayy")
     }
 
     /**
      * Send HTTP Request for get user info
      */
-    private fun getUser(username: String) {
+     fun getUser(username: String) {
         viewModelScope.launch {
             getUserUseCase.invoke(username).collect {
                 when (it) {
