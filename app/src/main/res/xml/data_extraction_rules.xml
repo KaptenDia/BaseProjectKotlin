@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Include all shared preferences by default -->
+        <include domain="sharedpref" path="."/>
+
+        <!-- Exclude secure storage from backup -->
+        <exclude domain="sharedpref" path="secure_prefs"/>
+    </cloud-backup>
+
+    <device-transfer>
+        <!-- Include data for device transfer -->
+        <include domain="sharedpref" path="."/>
+
+        <!-- Exclude secure storage from device transfer -->
+        <exclude domain="sharedpref" path="secure_prefs"/>
+    </device-transfer>
+</data-extraction-rules>
+
