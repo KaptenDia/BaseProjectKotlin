@@ -1,7 +1,7 @@
 package com.vascomm.basekotlin.data.remote.source
 
 import com.vascomm.basekotlin.data.remote.model.LoginRequest
-import com.vascomm.basekotlin.data.remote.model.AuthResponse
+import com.vascomm.basekotlin.data.model.LoginResponse
 import com.vascomm.basekotlin.data.remote.service.AuthService
 import com.vascomm.basekotlin.data.repository.AuthDataSource
 import retrofit2.Response
@@ -13,6 +13,6 @@ import javax.inject.Inject
 class AuthDataSourceImpl @Inject constructor(private val authService: AuthService) :
     AuthDataSource {
 
-    override suspend fun login(request: LoginRequest): Response<AuthResponse> =
+    override suspend fun login(request: LoginRequest): Response<LoginResponse> =
         authService.login(request)
 }

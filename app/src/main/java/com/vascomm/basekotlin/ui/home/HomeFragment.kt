@@ -3,6 +3,7 @@ package com.vascomm.basekotlin.ui.home
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.size.Scale
 import com.blankj.utilcode.util.LogUtils
@@ -14,6 +15,8 @@ import com.vascomm.basekotlin.util.Status
 import com.vascomm.basekotlin.util.showMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -44,28 +47,34 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun observeModel() {
-        viewModel.user.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.SUCCESS -> {
-                    response.data?.let { user ->
-                        LogUtils.d("$this SUCCESS")
-                        updateUI(user)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.user.collectLatest { response ->
+                when (response.status) {
+                    Status.SUCCESS -> {
+                        response.data?.let { user ->
+                            LogUtils.d("$this SUCCESS")
+                            updateUI(user)
+                        }
+                        hideLoading()
                     }
-                    hideLoading()
-                }
 
-                Status.LOADING -> {
-                    LogUtils.d("$this LOADING")
-                    showLoading()
-                }
-
-                Status.ERROR -> {
-                    LogUtils.d("$this ERROR")
-                    LogUtils.d("$this ${response.message}")
-                    context?.showMessage(response.message) {
-                        Toast.makeText(context, "OK ditekan!", Toast.LENGTH_SHORT).show()
+                    Status.LOADING -> {
+                        LogUtils.d("$this LOADING")
+                        showLoading()
                     }
-                    hideLoading()
+
+                    Status.ERROR -> {
+                        LogUtils.d("$this ERROR")
+                        LogUtils.d("$this ${response.message}")
+                        context?.showMessage(response.message) {
+                            Toast.makeText(context, "OK ditekan!", Toast.LENGTH_SHORT).show()
+                        }
+                        hideLoading()
+                    }
+
+                    Status.IDLE -> {
+                        // Initial state, do nothing
+                    }
                 }
             }
         }

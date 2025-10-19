@@ -22,5 +22,9 @@ data class Resource<out T>(
             return Resource(Status.LOADING, null, null)
         }
 
+        fun <T> idle(): Resource<T> {
+            return Resource(Status.IDLE, null, null)
+        }
+
     }
 }

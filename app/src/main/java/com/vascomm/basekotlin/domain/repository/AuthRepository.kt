@@ -1,6 +1,7 @@
 package com.vascomm.basekotlin.domain.repository
 
-import com.vascomm.basekotlin.data.remote.model.AuthResponse
+import com.vascomm.basekotlin.data.model.LoginResponse
+import com.vascomm.basekotlin.data.model.ResultResp
 import com.vascomm.basekotlin.data.remote.model.LoginRequest
 import retrofit2.Response
 
@@ -9,5 +10,5 @@ import retrofit2.Response
  */
 interface AuthRepository {
 
-    suspend fun login(request: LoginRequest): Response<AuthResponse>
+    suspend fun login(request: LoginRequest): ResultResp<LoginResponse>
 }

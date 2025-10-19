@@ -2,38 +2,55 @@ package com.vascomm.basekotlin.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vascomm.basekotlin.core.network.ErrorCode
-import com.vascomm.basekotlin.core.network.ErrorParser
+import com.vascomm.basekotlin.data.model.LoginResponse
 import com.vascomm.basekotlin.data.remote.model.LoginRequest
 import com.vascomm.basekotlin.domain.repository.AuthRepository
-import com.vascomm.basekotlin.core.network.ResponseCode
+import com.vascomm.basekotlin.util.ResponseHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+sealed class LoginState {
+    object Idle : LoginState()
+    object Loading : LoginState()
+    data class Success(val data: LoginResponse?) : LoginState()
+    data class Error(val message: String) : LoginState()
+}
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    fun login(username: String, password: String, onResult: (Boolean, String?) -> Unit) {
+    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
+    val loginState: StateFlow<LoginState> = _loginState
+
+    fun login(username: String, password: String) {
         viewModelScope.launch {
-            try {
-                val response = authRepository.login(LoginRequest(username, password))
-                if (response.isSuccessful && response.body() != null) {
-                    onResult(true, response.body()?.token)
-                } else {
-                    val error = ErrorParser.parse(response.errorBody())
-                    val errorCodeMessage = ErrorCode.getMessage(error.code)
-                    val fallbackHttpMessage = ResponseCode.getMessage(response.code())
+            _loginState.value = LoginState.Loading
 
-                    val finalMessage = errorCodeMessage.ifEmpty { fallbackHttpMessage }
+            val result = authRepository.login(LoginRequest(username, password))
 
-                    onResult(false, finalMessage)
+            ResponseHandler.checkResponse(
+                response = result,
+                showDialogError = false,
+                checkSession = false,
+                onSuccess = { successResp ->
+                    _loginState.value = LoginState.Success(successResp.data)
+                },
+                onFailure = { errorResp ->
+                    val errorMessage = errorResp.errors?.firstOrNull()?.message
+                        ?: errorResp.message
+                        ?: "Login failed"
+                    _loginState.value = LoginState.Error(errorMessage)
                 }
-            } catch (e: Exception) {
-                onResult(false, e.message)
-            }
+            )
         }
+    }
+
+    fun resetState() {
+        _loginState.value = LoginState.Idle
     }
 }

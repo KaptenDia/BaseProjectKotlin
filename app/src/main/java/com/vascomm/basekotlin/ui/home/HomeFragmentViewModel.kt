@@ -1,8 +1,5 @@
 package com.vascomm.basekotlin.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.StringUtils
@@ -14,6 +11,9 @@ import com.vascomm.basekotlin.util.Resource
 import com.vascomm.basekotlin.util.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,9 +26,8 @@ class HomeFragmentViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase
 ) : BaseViewModel() {
 
-    private val _user = MutableLiveData<Resource<UserResponse>>()
-    val user: LiveData<Resource<UserResponse>>
-        get() = _user
+    private val _user = MutableStateFlow<Resource<UserResponse>>(Resource.idle())
+    val user: StateFlow<Resource<UserResponse>> = _user.asStateFlow()
 
     init {
         LogUtils.d("$this initialize")
@@ -43,17 +42,15 @@ class HomeFragmentViewModel @Inject constructor(
             getUserUseCase.invoke(username).collect {
                 when (it) {
                     is State.Loading -> {
-                        _user.postValue(Resource.loading())
+                        _user.value = Resource.loading()
                     }
                     is State.Success -> {
-                        _user.postValue(Resource.success(it.data))
+                        _user.value = Resource.success(it.data)
                     }
                     is State.Error -> {
-                        _user.postValue(
-                            Resource.error(
-                                message = it.message ?: StringUtils.getString(
-                                    R.string.something_went_wrong
-                                )
+                        _user.value = Resource.error(
+                            message = it.message ?: StringUtils.getString(
+                                R.string.something_went_wrong
                             )
                         )
                     }
