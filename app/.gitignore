@@ -1,1 +1,4 @@
 /build
+
+# Firebase configuration file (sensitive data)
+google-services.json

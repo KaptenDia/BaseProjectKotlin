@@ -15,6 +15,10 @@ buildscript {
         // Navigation Component versi terbaru
         def nav_version = '2.7.5'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+
+        // Firebase
+        classpath 'com.google.gms:google-services:4.4.4'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
     }
 }
 
